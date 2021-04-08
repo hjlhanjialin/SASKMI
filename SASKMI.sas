@@ -1,13 +1,13 @@
 /************************************************************************************************************/
 /*       NAME: SASKMI.SAS                                         				  	 					*/
-/*      TITLE: A SAS Macro to Perform Kaplan-Meier Multiple Imputation for Survival Analyses with Competing Events   */
+/*      TITLE: A SAS Macro to Perform Kaplan-Meier Multiple Imputation for Survival Analyses with Competing Events  				*/
 /*     AUTHOR: Jialin Han, Stanford University                                          	            */
-/*   Software: SAS Enterprise Guide 7.1																    */
-/*  CREATE ON: Dec 2020                                      					 					   */
-/*  UPDATE ON: Apr 2021
-/* DESCRIPTION: This program perform KMI on survival analysis with competing events 		*/
+/*   Software: SAS Enterprise Guide 7.1									    */							    */
+/*  CREATE ON: Dec 2020                                      					 	    */
+/*  UPDATE ON: Apr 2021											    */
+/* DESCRIPTION: This program perform KMI on survival analysis with competing events 			    */
 /*													    */
-/*    Copyright (C) <2021>  <Jialin Han>				                    */
+/*    Copyright (C) <2021>  <Jialin Han>				                  		    */
 /*													    */
 /*    This program is free software: you can redistribute it and/or modify				    */
 /*    it under the terms of the GNU General Public License as published by			     	    */
