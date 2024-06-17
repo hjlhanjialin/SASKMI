@@ -1,27 +1,28 @@
-/************************************************************************************************************/
-/*       NAME: SASKMI.SAS                                         				  	 					*/
-/*      TITLE: A SAS Macro to Perform Kaplan-Meier Multiple Imputation for Survival Analyses with Competing Events  				*/
-/*     AUTHOR: Jialin Han, Stanford University                                          	            */
-/*   Software: SAS Enterprise Guide 7.1									    */							    */
-/*  CREATE ON: Dec 2020                                      					 	    */
-/*  UPDATE ON: Apr 2021											    */
-/* DESCRIPTION: This program perform KMI on survival analysis with competing events 			    */
-/*													    */
-/*    Copyright (C) <2021>  <Jialin Han>				                  		    */
-/*													    */
-/*    This program is free software: you can redistribute it and/or modify				    */
-/*    it under the terms of the GNU General Public License as published by			     	    */
-/*    the Free Software Foundation, either version 3 of the License, or					    */
-/*    (at your option) any later version.								    */
-/*													    */
-/*    This program is distributed in the hope that it will be useful,				            */
-/*    but WITHOUT ANY WARRANTY; without even the implied warranty of					    */
-/*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the					    */
-/*    GNU General Public License for more details.							    */
-/*													    */
-/*    You should have received a copy of the GNU General Public License					    */
-/*    along with this program.  If not, see <http://www.gnu.org/licenses/>.				    */
-/************************************************************************************************************/
+/************************************************************************************************************
+       NAME: SASKMI.SAS                                         				  	 					
+      TITLE: A SAS Macro to Perform Kaplan-Meier Multiple Imputation for Survival Analyses with Competing Events  				
+     AUTHOR: Jialin Han, Stanford University                                          	            
+   Software: SAS Enterprise Guide 7.1									    						    
+  CREATE ON: Dec 2020                                      					 	    
+  UPDATE ON: Apr 2021	                                   					 	    
+  UPDATE ON: June 2024	- Fix Macro reach character limit problem										    
+ DESCRIPTION: This program perform KMI on survival analysis with competing events 			    
+													    
+    Copyright (C) <2021>  <Jialin Han>				                  		    
+													    
+    This program is free software: you can redistribute it and/or modify				    
+    it under the terms of the GNU General Public License as published by			     	    
+    the Free Software Foundation, either version 3 of the License, or					    
+    (at your option) any later version.								    
+													    
+    This program is distributed in the hope that it will be useful,				            
+    but WITHOUT ANY WARRANTY; without even the implied warranty of					    
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the					    
+    GNU General Public License for more details.							    
+													    
+    You should have received a copy of the GNU General Public License					    
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.				    
+***********************************************************************************************************/
 
 %macro SASKMI(	data =  , time = , event = , 
 			class = , 
@@ -89,7 +90,12 @@ run;
 /*Time Need to Impute*/
 proc sql noprint;
 select count(*) into: n_it from xx;
-select &time into: itimes SEPARATED BY ' ' from xx order by _id;
+/*Update June 17, 2024:
+I decidede to not output &time as a macro as it will truncate at ~60000 charater,
+Instead let's use it as a dataset*/
+proc sql;
+create table itimes as select &time from xx order by  _id;
+/*select &time into: itimes SEPARATED BY ' ' from xx order by _id;*/
 quit;
 /*Find interval function*/
 %let a = 0;
@@ -108,7 +114,11 @@ end;
 else do;
 ct = 0||{&cens_time};
 end;
-it = {&itimes};
+/*it = {&itimes};*/
+use itimes;
+read all var _all_ into it;
+close itimes;
+it=t(it) ;*make sure it = vecotr;
 tmp = repeat(0, ncol(it));
 do i = 1 to (ncol(ct)-1);
 idx = loc(it > ct[i] & it <= ct[i+1]);
